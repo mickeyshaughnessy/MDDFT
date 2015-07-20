@@ -1,0 +1,72 @@
+digraph {
+
+fontname=Helvetica
+overlap=false;
+ranksep=equally;
+rankdir=TB;
+
+subgraph clusterDB {
+  label="Ab initio data";
+  fontname=Helvetica
+  style=filled
+  fillcolor=lightblue
+  DB [ 
+    color=darkgoldenrod1,
+      fontname=Helvetica
+      fontcolor=navy,
+      shape=box;
+      style=filled;
+      fill=darkgoldenrod1,
+      width=2;
+      height=0.5;
+      label="Search database\n of {cluster=>force} pairs"];
+  F [ 
+    color=darkgoldenrod1,
+      fontname=Helvetica
+      fontcolor=navy,
+      shape=box;
+      style=filled;
+      fill=darkgoldenrod1,
+      width=2;
+      height=0.5;
+      label="Interpolate forces"];
+  DB -> F [label="close database clusters", color=blue, fontcolor=blue, fontname=Helvetica]
+}
+
+subgraph clusterCMD {
+  fontname=Helvetica
+  label="Newtonian dynamics";
+  style=filled
+  fillcolor=lightgrey
+  T0 [   color=darkgoldenrod2,
+	       fontcolor=navy,
+	       label="time step 0",
+         style=filled
+         fillcolor=cornsilk
+	       shape=box];
+  T1 [   color=darkgoldenrod2,
+	       fontcolor=navy,
+	       label="time step 1",
+         style=filled
+         fillcolor=cornsilk
+	       shape=box];
+  T2 [   color=darkgoldenrod2,
+	       fontcolor=navy,
+         style=filled
+         fillcolor=cornsilk
+	       label="time step 2",
+	       shape=box];
+  InvisEnd [fill=none, label="", shape=none, height=0];
+}
+
+  T0 -> DB [label="", color=blue, headport=nw, fontcolor=blue]
+  F  -> T0 [label="", tailport=w]
+  T1 -> DB [label="", color=blue, headport=w, fontcolor=blue]
+  F  -> T1 [label="", tailport=w]
+  T2 -> DB [label="   {clusters}", color=blue, headport=w, fontcolor=blue, fontname=Helvetica]
+  F  -> T2 [label="   {forces}", tailport=w, fontname=Helvetica]
+
+  T0 -> T1 [label=" t+dt", color=red, fontcolor=red]
+  T1 -> T2 [label=" t+dt", color=red, fontcolor=red]
+  T2 -> InvisEnd [label=" t+dt", color=red, fontcolor=red]
+}

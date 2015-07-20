@@ -1,0 +1,31 @@
+digraph {
+ratio=1.0
+  node [shape=circle,color=skyblue,style=filled]
+  C1 ;
+  C2 ;
+  C3 ;
+  C4 ;
+  C5 ;
+  C6 ;
+  C7 ;
+  C8 ;
+  C9 ;
+  C10 ;
+subgraph Dist { edge [dir=none,len=1]
+C1  -> C2 [label = 0.94 ]
+C1  -> C6 [label = 1.00 ]
+C1  -> C7 [label = 0.90 ]
+C1  -> C8 [label = 0.99 ]
+C3  -> C9 [label = 0.91 ]
+C3  -> C10 [label = 0.67 ]
+C4  -> C9 [label = 0.91 ]
+C4  -> C10 [label = 0.98 ]
+C5  -> C6 [label = 0.90 ]
+C5  -> C7 [label = 0.96 ]
+C5  -> C8 [label = 0.99 ]
+C5  -> C9 [label = 0.76 ]
+C5  -> C10 [label = 0.72 ]
+C6  -> C8 [label = 0.57 ]
+C9  -> C10 [label = 0.77 ]
+  }
+}

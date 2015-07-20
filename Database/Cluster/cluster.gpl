@@ -1,0 +1,10 @@
+#!/usr/bin/env gnuplot
+!rm -f clusters.dat; kmeans.py
+set size square
+set xrange [-1:1]
+set yrange [-1:1]
+plot \
+ "clusters.dat" index 0 t "points" lc var, \
+ "clusters.dat" index 2 ps 3 lt 3 t "means", \
+ "clusters.dat" u 4:5 index 2 ps 3 lt 4 t "centers"
+pause -1 "CR"

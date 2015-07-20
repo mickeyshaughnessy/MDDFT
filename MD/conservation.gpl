@@ -1,0 +1,70 @@
+#!/usr/bin/env gnuplot
+set macros
+set term x11
+data='"Ar-12_2x200/comp_tol=1e-2.dat"'
+data='"Ar-12_2x200/comp_tol=2e-2.dat"'
+
+dt = 200./28
+T=30.
+N = 32
+m = 39.95 #[amu]
+M = N*m
+kB = 1.3806488e-23 #[J/K]
+amu2kg = 1.66053892e-27
+A2m = 1.e-10
+fs2s = 1.e-15
+v = sqrt(3.*kB*T/(amu2kg*m))*fs2s/A2m
+P = M*v
+print "v thermal ",v," [A/fs]"
+#pause -1 "CR"
+
+set style line 1 lt 1 lc rgbcolor "red"
+set style line 2 lt 1 lc rgbcolor "blue"
+
+file='"dynamics_error.eps"'
+set logscale y
+set format y "10^{%T}"
+set key right center
+set xlabel "TIME [fs]"
+set ylabel "ERROR"
+plot \
+@data u (($1)*dt):(abs(($2)-($3))/T)  w l t "temperature" ls 1, \
+@data u (($1)*dt):(abs($4)/P)  w l t "momentum" ls 2 
+pause -1 @file
+set term post eps enhanced color 22 lw 2; set output "dynamics_error.eps"; repl
+!epstopdf @file; rm -f @file; f=@file; cp -i ${f%.eps}.pdf ../Notes/Figures
+##################################################################
+exit
+set ylabel  "TEMPERATURE ERROR"
+set y2label "MOMENTUM ERROR"
+set ytics nomirror
+set y2tics
+#set yrange  [-0.0001:0.001]
+#set y2range [-0.0001:0.001]
+plot \
+@data u (($1)*dt):(abs(($2)-($3))/T)  w l t "temperature" ls 1, \
+@data u (($1)*dt):(abs($4)/P) axes x1y2 w l t "momentum" ls 2 
+pause -1 @file
+set term post eps color 22 lw 2; set output "dynamics_error.eps"; repl
+!epstopdf @file; rm -f @file; f=@file; cp -i ${f%.eps}.pdf ../Notes/Figures
+##################################################################
+exit
+##################################################################
+!perl -nwe 'if (/^\s+\d|^\#> /) { print $_;}'   db.log > run.dat
+!perl -nwe 'if (/^\s+\d|^\#> /) { print $_;}' init.log > ref.dat
+!paste run.dat ref.dat > comp.dat
+
+#step temp c_F[4] c_F[5] c_F[6] etotal c_F[1] c_F[2] c_F[3]
+
+T = 30
+set y2range  [-0.0001:0.1]
+set yrange [-0.0001:0.001]
+set xlabel "STEP"
+set ylabel "ERROR"
+plot \
+"comp.dat" u 1:(abs($2-$11)/T) axes x1y2 w l t "T", \
+"comp.dat" u 1:(abs($3-$12))             w l t "p" lt 3
+pause -1 "CR"
+
+
+

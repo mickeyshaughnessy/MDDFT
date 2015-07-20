@@ -1,0 +1,60 @@
+set macros
+set term x11
+# make this a style.gpl
+set key left Left
+#set style line  1 lt 2 lc rgb "blue"    lw 0.5    ps 0.3 pt 1 
+#set style line  2 lt 1 lc rgb "cyan"    lw 1 pt 7 ps 0.6
+#set style line  3 lt 2 lc rgb "red"     lw 0.5    ps 0.3 pt 2
+#set style line  4 lt 1 lc rgb "magenta" lw 1 pt 7 ps 0.6
+set style line  1 lt 2 lc rgb "blue"    lw 0.75   ps 0.7 pt 1 
+set style line  2 lt 1 lc rgb "cyan"    lw 1 pt 7 ps 0.8
+set style line  3 lt 2 lc rgb "red"     lw 0.75   ps 0.7 pt 2
+set style line  4 lt 1 lc rgb "magenta" lw 1 pt 7 ps 0.8
+set encoding iso_8859_1
+#data = '"test.force_diffs"'
+set xlabel "CLUSTER DISTANCE [{\305}]"
+set ylabel "FORCE DIFFERNCE [eV/{\305}]"
+#unset key
+lbs = "300K-4 300K-16 2500K-4 2500K-16"
+fs = "300K-Si-4 300K-Si-16 2500K-Si-4 2500K-Si-16"
+#lbs = "300K-16 2500K-16"
+
+pwd="../Databases/200-clusters/"
+file='"RMSD_force-distance_correlation.eps"'
+set xrange [0:0.1]
+set yrange [0:1.0]
+l1(x) = 0.09/0.02*x
+l2(x) = 0.23/0.02*x
+l3(x) = 0.03/0.02*x
+l4(x) = 0.35/0.02*x
+plot \
+for [i=1:words(lbs)] \
+pwd.word(fs,i).".rmsd"  u 3:4 ls i t word(lbs,i), \
+l1(x) w l ls 1 t "", \
+l2(x) w l ls 1 t "", \
+l3(x) w l ls 3 t "", \
+l4(x) w l ls 3 t ""
+pause -1 @file
+set term post eps color 22 enhanced; set output @file; repl
+!epstopdf @file; rm -f @file; f=@file; cp -i ${f%.eps}.pdf ../../Notes/Figures
+set term x11; set output
+
+file='"OGTO_force-distance_correlation.eps"'
+#set xrange [0:1]
+#set yrange [0:5]
+set xrange [0:0.2]
+set yrange [0:1.0]
+l1(x) = 0.20/0.2*x
+l2(x) = 1.00/0.2*x
+l3(x) = 0.10/0.2*x
+l4(x) = 1.25/0.2*x
+plot \
+for [i=1:words(lbs)] \
+pwd.word(fs,i).".ogto_1.000"  u 3:4 ls i t word(lbs,i), \
+l1(x) w l ls 1 t "", \
+l2(x) w l ls 1 t "", \
+l3(x) w l ls 3 t "", \
+l4(x) w l ls 3 t ""
+pause -1 @file
+set term post eps color 22 enhanced; set output @file; repl
+!epstopdf @file; rm -f @file; f=@file; cp -i ${f%.eps}.pdf ../../Notes/Figures

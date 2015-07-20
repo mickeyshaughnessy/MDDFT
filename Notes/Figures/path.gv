@@ -1,0 +1,74 @@
+digraph {
+ ratio=1.0
+ node [shape=circle,color=red,style=filled]
+  C1 ;
+  C2 ;
+  C9 ;
+ node [shape=circle,color=skyblue,style=filled]
+  C9 ;
+  C3 ;
+  C25 ;
+  C13 ;
+  C17 ;
+  C2 ;
+  C4 ;
+  C12 ;
+  C21 ;
+  C16 ;
+  C17 ;
+  C21 ;
+  C4 ;
+  C13 ;
+  C9 ;
+  C25 ;
+  C16 ;
+  C1 ;
+  C3 ;
+  C12 ;
+  C17 ;
+  C1 ;
+  C2 ;
+  C3 ;
+  C16 ;
+  C13 ;
+  C4 ;
+  C25 ;
+  C12 ;
+  C21 ;
+ subgraph Dist { edge [dir=none]
+  C2  -> C4 [label = 0.17 ]
+  C1  -> C21 [label = 0.25 ]
+  C9  -> C1 [label = 0.14 ]
+  C2  -> C16 [label = 0.21 ]
+  C1  -> C17 [label = 0.24 ]
+  C1  -> C4 [label = 0.24 ]
+  C2  -> C12 [label = 0.35 ]
+  C2  -> C21 [label = 0.17 ]
+  C2  -> C3 [label = 0.25 ]
+  C9  -> C25 [label = 0.24 ]
+  C1  -> C16 [label = 0.32 ]
+  C9  -> C2 [label = 0.19 ]
+  C2  -> C17 [label = 0.17 ]
+  C1  -> C25 [label = 0.20 ]
+  C9  -> C21 [label = 0.26 ]
+  C1  -> C12 [label = 0.25 ]
+  C9  -> C17 [label = 0.12 ]
+  C9  -> C16 [label = 0.22 ]
+  C2  -> C25 [label = 0.20 ]
+  C9  -> C3 [label = 0.20 ]
+  C9  -> C12 [label = 0.24 ]
+  C1  -> C13 [label = 0.22 ]
+  C2  -> C1 [label = 0.24 ]
+  C1  -> C9 [label = 0.14 ]
+  C1  -> C2 [label = 0.24 ]
+  C9  -> C4 [label = 0.23 ]
+  C2  -> C13 [label = 0.18 ]
+  C9  -> C13 [label = 0.23 ]
+  C2  -> C9 [label = 0.19 ]
+  C1  -> C3 [label = 0.17 ]
+  }
+ subgraph Path { edge [style="bold",color="red"] 
+  C1  -> C2 [label = 0.03 ]
+  C2  -> C9 [label = 0.08 ]
+ }
+}

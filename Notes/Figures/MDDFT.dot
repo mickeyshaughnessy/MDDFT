@@ -1,0 +1,65 @@
+digraph {
+
+overlap=false;
+ranksep=equally;
+rankdir=TB;
+  BOMD [   color=darkgoldenrod1,
+	             fontcolor=navy,
+	             label="Ab Initio DFT",
+	             shape=box];
+  DB [ 
+    color=darkgoldenrod1,
+       fontcolor=navy,
+      shape=box;
+      style=filled;
+      fill=darkgoldenrod1,
+      width=2;
+      height=0.5;
+      label="Database of {cluster:force} pairs"];
+subgraph clusterCMD {
+  rankdir=LR;
+  rank=same;
+  label="Newtonian Molecular Dynamics";
+  CMD0 [   color=darkgoldenrod2,
+	             fontcolor=navy,
+	             label="time step 0",
+	             shape=box];
+  CMD1 [   color=darkgoldenrod2,
+	             fontcolor=navy,
+	             label="time step 1",
+	             shape=box];
+  InvisMid [fill=none;
+		label=" ";
+	     	shape=none];
+  CMD2 [   color=darkgoldenrod2,
+	             fontcolor=navy,
+	             label="time step 2",
+	             shape=box];
+  CMD3 [   color=darkgoldenrod2,
+	             fontcolor=navy,
+	             label="time step 3",
+	             shape=box];
+
+  InvisEnd [fill=none,
+	fontcolor=navy,
+	   label="...", 
+	    shape=none];
+  }
+  BOMD -> DB [label=" Clusters and central atom forces"]; 
+
+  CMD0 -> DB [label="{Clusters}", color=blue, headport=nw, fontcolor=blue]
+  DB -> CMD0 [label=" {Forces}", tailport=w]
+  CMD1 -> DB [label="{Clusters}", color=blue, headport=w, fontcolor=blue]
+  DB -> CMD1 [label="{Forces}", tailport=w]
+  CMD2 -> DB [label="{Clusters}", color=blue, headport=w, fontcolor=blue]
+  DB -> CMD2 [label="{Forces}", tailport=w]
+  CMD3 -> DB [label="{Clusters}", color=blue, headport=sw, fontcolor=blue]
+  DB -> CMD3 [label=" {Forces}", tailport=w]
+
+  CMD0 -> CMD1 [label=" t+dt", color=red, fontcolor=red]
+  CMD1 -> CMD2 [label=" t+dt", color=red, fontcolor=red]
+  CMD1 -> InvisMid [label="", style=invis]
+  InvisMid -> CMD2 [label="", style=invis]
+  CMD2 -> CMD3 [label=" t+dt", color=red, fontcolor=red]
+  CMD3 -> InvisEnd [label=" t+dt", color=red, fontcolor=red]
+}

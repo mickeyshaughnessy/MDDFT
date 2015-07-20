@@ -1,0 +1,14 @@
+/* run with : neato -Tpng db.nto > db.png */
+graph G {
+node [shape=circle,style=filled];
+{node [shape=circle,style=filled,color=deepskyblue,fontcolor=blue] A1 A2 A3}
+A -- A1 [label="6"];
+A -- A2 [label="7"];
+A -- A3 [label="8"];
+{edge [style=invis]; A1 -- A2 -- A3}
+edge [len=2]; /* applies to all following edges */
+A -- B [label="AB"]; A -- C [label="2"]; A -- D [label="3"];
+A -- E [label="4"]; A -- F [label="5"]; B -- C [label="1"];
+B -- E [label="2"]; B -- F [label="3"]; C -- D [label="1"];
+D -- E [label="1"];
+}

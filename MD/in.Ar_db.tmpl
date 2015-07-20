@@ -1,0 +1,37 @@
+boundary p p p
+echo both
+units           real
+newton          off
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+variable w       equal W
+variable nn      equal NN
+variable nsteps  equal NSTEPS
+variable db      string DB
+variable tol     equal TOL
+variable max_local_clusters equal MAX_LOCAL_CLUSTERS
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+lattice         fcc 5.405
+variable        cut equal 5.
+# nearest neighbor distance :  3.822 [A].
+pair_style lj/cut 13.5
+read_data Ar_$w.data
+variable natoms equal atoms
+timestep 1.0
+compute F all reduce sum fx fy fz vx vy vz
+thermo_style custom step temp c_F[4] c_F[5] c_F[6] etotal c_F[1] c_F[2] c_F[3]
+thermo 100
+fix NVE all nve
+#------------------------------------------------
+# (2) database run
+#------------------------------------------------
+thermo 1
+reset_timestep 0
+pair_style database ${cut} ${nn} ${db} ${tol} ${max_local_clusters}
+pair_coeff      * *
+variable T equal temp
+variable t format T %10.6f
+variable Px equal c_F[4]
+variable p format Px %10.4g
+fix P all print 1 "$t $p" file db.dat
+log db.log
+run ${nsteps}

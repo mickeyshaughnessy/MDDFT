@@ -1,0 +1,45 @@
+boundary p p p
+echo both
+units           metal
+newton          on 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+variable w       equal W
+variable nn      equal NN
+variable nsteps  equal NSTEPS
+variable db      string DB
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+lattice         diamond 5.430949778462431
+variable        cut equal 4. 
+# nearest neighbor distance :  2.35 [A].
+region          BOX block 0 $w 0 $w 0 $w
+create_box      1  BOX
+create_atoms    1 region BOX
+mass            * 28.06
+variable natoms equal atoms
+velocity all create 600.0 4928459 rot yes mom yes dist gaussian
+timestep 0.0005 # 0.001
+#------------------------------------------------
+# (1) thermalize
+#------------------------------------------------
+pair_style      tersoff
+pair_coeff      * * Si.tersoff Si
+fix NVE all nve
+thermo_style custom step temp etotal
+thermo 100
+log thermalize.log
+run 800
+write_data Si_$w.data
+#------------------------------------------------
+# (2) database build
+#------------------------------------------------
+thermo 1
+reset_timestep 0
+dump F all custom 1 Si-force.dmp id type fx fy fz
+dump_modify F sort id format "%d %d %24.19g %24.19g %24.19g"
+pair_style hybrid/overlay tersoff ext ${cut} ${db} ${nn}
+pair_coeff      * * tersoff Si.tersoff Si
+pair_coeff      * * ext
+variable T equal temp
+fix P all print 1 "$T" file init.dat
+log init.log
+run ${nsteps}

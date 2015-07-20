@@ -1,0 +1,74 @@
+set macros
+set term x11
+data1 = '"300K-Si-4_216x200.paths"'
+data2 = '"300K-Si-16_216x200.paths"'
+data3 = '"2500K-Si-4_216x200.paths"'
+data4 = '"2500K-Si-16_216x200.paths"'
+
+set encoding iso_8859_1
+
+set style line  1 lt 2 lc rgb "blue" lw 2  
+set style line  2 lt 1 lc rgb "cyan" lw 2  
+set style line  3 lt 2 lc rgb "red" lw 2  
+set style line  4 lt 1 lc rgb "magenta" lw 2  
+
+file = '"paths.eps"'
+npaths = 10
+set yrange [0:0.04]
+set xlabel "TIME [fs]"
+set ylabel "CLUSTER DISTANCE [\305]"
+plot \
+for [i=1:npaths] @data1 u 1:(column(i+1)) w lp ls 1 t "", \
+for [i=1:npaths] @data2 u 1:(column(i+1)) w lp ls 2 t "", \
+for [i=1:npaths] @data3 u 1:(column(i+1)) w lp ls 3 t "", \
+for [i=1:npaths] @data4 u 1:(column(i+1)) w lp ls 4 t ""
+pause -1 @file
+set term post eps color 22 lw 2 enhanced; set output @file; repl
+!epstopdf @file ; rm @file
+set term x11; set output
+
+set yrange [*:*]
+set ylabel "PROBABILITY"
+set xlabel "CLUSTER DISTANCE [\305]"
+data1 = '"300K-Si-4_216x200.phist"'
+data2 = '"300K-Si-16_216x200.phist"'
+data3 = '"2500K-Si-4_216x200.phist"'
+data4 = '"2500K-Si-16_216x200.phist"'
+file = '"path_distribution.eps"'
+plot \
+@data1 w l t " 4: 300K"  ls 1, \
+@data2 w l t "16: 300K"  ls 2, \
+@data3 w l t " 4: 2500K" ls 3, \
+@data4 w l t "16: 2500K" ls 4
+pause -1 @file
+set term post eps color 22 lw 2 enhanced; set output @file; repl
+!epstopdf @file ; rm @file
+
+file = '"path_distribution.eps"'
+set term post eps color 22 lw 2 enhanced; set output @file; 
+set multiplot
+set key right bottom
+set xtics 0.01
+repl
+set xtics 50
+set ytics 0.01
+data1 = '"300K-Si-4_216x200.paths"'
+data2 = '"300K-Si-16_216x200.paths"'
+data3 = '"2500K-Si-4_216x200.paths"'
+data4 = '"2500K-Si-16_216x200.paths"'
+set origin 0.27,0.37
+set size 0.7,0.6
+set yrange [0:0.04]
+set xlabel "TIME [fs]"               font ",16" offset 0,0.5
+set ylabel "CLUSTER DISTANCE [\305]" font ",16" offset 2,0
+#set ylabel "DISTANCE [\305]"
+set pointsize 0.3
+plot \
+for [i=1:npaths] @data1 u 1:(column(i+1)) w lp ls 1 t "", \
+for [i=1:npaths] @data2 u 1:(column(i+1)) w lp ls 2 t "", \
+for [i=1:npaths] @data3 u 1:(column(i+1)) w lp ls 3 t "", \
+for [i=1:npaths] @data4 u 1:(column(i+1)) w lp ls 4 t ""
+unset multiplot
+!epstopdf @file ; rm @file
+
+!cp -i path_distribution.pdf ../../Notes/Figures

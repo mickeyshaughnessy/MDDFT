@@ -1,0 +1,26 @@
+set macros
+set term x11
+
+set style line 9 lt 2 lc rgb "black"
+set style line 1 lt 1 lc rgb "red"
+set style line 2 lt 1 lc rgb "magenta"
+set style line 3 lt 1 lc rgb "cyan"
+set style line 4 lt 1 lc rgb "blue"
+
+sigs = "0.1 0.5 1.0 2.0"
+
+set xlabel "R"
+set ylabel "d(R)"
+set key left
+file = '"scale.eps"'
+plot \
+for [i=1:4] "2pt.dat" u 1:(column(i+1)) w l  ls i t "OGTO s=".word(sigs,i), \
+x w l ls 9 t "RMSD"
+pause -1 @file
+
+set term post eps color 22 lw 2 enhanced; set output @file; repl
+!epstopdf @file
+
+
+exit
+for [i=1:4] "2p.dat"  u 1:(column(i+1)) w lp ls i t "OGTO s=".word(sigs,i), \

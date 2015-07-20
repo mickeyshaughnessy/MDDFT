@@ -1,0 +1,17 @@
+This directory contains the essential code for generating a database and running lammps using it. There are several steps to generate the database:
+
+1. Create either an OUTCAR or lammps_data file (the later using the format "dump C all custom 1 LJ_data type x y z fx fy fz)
+
+2. Parse the output file to generate a text file, usually called DB_*.dat. The format is currently:
+cluster_number x1 y1 z1 ... xn yn zn fz fy fz magF
+where n is the number of neighbors in the cluster
+
+This will be changed shortly to
+cluster_number species_string fx fy fz x1 y1 z1 ... xn yn zn
+where species_string is a string with n characters: 1221311, say, that species the species of the each neighbor.
+
+3. If you haven't already compiled the database_builder code, do so using the ./make_DBbuilder.sh command
+4. Then, run ./db_builder  (there is some hardcoding still, the input file is currently called DB_Lj.dat and the output file is 
+cluster_sqlite
+5. Now, modify your lammps input file to take the ext pair_style, cross your fingers, and let 'er rip!
+

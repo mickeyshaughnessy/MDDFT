@@ -1,0 +1,13 @@
+Si (and in general id's get shuffled in 2nd run)
+
+* switch to OGTO 
+* NEED R
+* isn't finding distances -- exhaustive search
+
+====================
+first 216 samples (1st timestep) ok
+i.e. if NVE off resamples these fine
+
+is the first step of dynamics wrong i.e. wrong forces?
+
+also replace NVE steps with read_data

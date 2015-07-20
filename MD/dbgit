@@ -1,0 +1,3 @@
+#!/bin/bash
+#gdb --args ~/repo/lammps-atc/src/lmp_linux-ext -in $1
+lldb  ~/repo/lammps-atc/src/lmp_mac-ext -- -in $1

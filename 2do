@@ -1,0 +1,14 @@
+off-axis rotation
+real sph harm : see http://mathworld.wolfram.com/SphericalHarmonic.html
+outline Kabsch
+if perfect T then no info use RMSD
+find submatrix in lit for D1
+include D = exp d exp
+
+real vs complex spherical harmonics
+
+D1 rotation
+try smarter refs for search
+bigger db 
+--for search efficiency
+--close C in ball

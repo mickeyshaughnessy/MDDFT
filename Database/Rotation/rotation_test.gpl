@@ -1,0 +1,46 @@
+set macros
+data = '"rotation.dat"'
+!if [ ! -e @data ]; then ./rotation_test.py; fi
+set term x11
+
+set style line 1 lt 1 lc rgbcolor "black"  lw 2
+set style line 2 lt 1 lc rgbcolor "blue"  lw 2
+set style line 3 lt 1 lc rgbcolor "cyan"  lw 2
+set style line 4 lt 1 lc rgbcolor "web-green"  lw 2
+set style line 5 lt 1 lc rgbcolor "red" lw 2
+set style line 6 lt 1 lc rgbcolor "black"  lw 2
+set style line 7 lt 2 lc rgbcolor "blue"  lw 2
+set style line 8 lt 2 lc rgbcolor "cyan"  lw 2
+set style line 9 lt 2 lc rgbcolor "web-green"  lw 2
+set style line 10 lt 2 lc rgbcolor "red" lw 2
+
+################################################################
+# ROTATION
+################################################################
+#set key bottom center Left samplen 1
+set key top right Left samplen 1
+file = '"rotation_test.eps"'
+
+set xlabel "{/Symbol a}"
+set ylabel "NORMALIZED DISTANCE"
+lbs="0.0 0.1 0.5 1.0 2.0"
+lab(x) = x == "0.0" ? "RMSD" : "OGTO {/Symbol s}=".x
+n=words(lbs)
+
+print lab(word(lbs,1))
+print lab(word(lbs,2))
+
+set yrange [-0.1:*]
+
+plot \
+for [i=1:n] @data u 1:(column(i+1))   w l ls i t lab(word(lbs,i))
+pause -1 @file
+
+plot \
+for [i=1:n] @data u 1:(column(i+1+n)) w l ls i t lab(word(lbs,i))
+pause -1 @file
+
+
+set term post eps color 22 enhanced lw 2; set output @file; repl; set term x11; set output
+!epstopdf @file; rm -f @file; f=@file; cp -i ${f%.eps}.pdf ../../Notes/Figures
+

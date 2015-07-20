@@ -1,0 +1,15 @@
+! sed "s/>/#/g"  size=200_refs=10_convergence.dat > c.dat
+
+plot "c.dat" u 6 w p
+pause -1 "hit return"
+
+plot "c.dat" u 6 w l
+pause -1 "hit return"
+
+set logscale y
+repl
+pause -1 "hit return"
+
+set logscale xy
+repl
+pause -1 "hit return"

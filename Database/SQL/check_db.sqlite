@@ -1,0 +1,11 @@
+.headers on
+.mode columns
+.tables
+.schema clusters
+select * from clusters;
+.schema cluster_distances
+select * from cluster_distances;
+.schema reference_clusters
+select * from reference_clusters;
+.dump
+.exit

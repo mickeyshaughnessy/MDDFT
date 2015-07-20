@@ -1,0 +1,16 @@
+# dot -Tpng db.dot > db.png
+digraph {
+    ratio=1.0
+    size="4,4"
+    node [shape=circle] C1; C2; C3: C4; C5;
+    subgraph Rel1 {
+        edge [dir=none, color=black]
+        C1 -> C5 
+    }
+    subgraph Rel2 {
+        edge [color=blue]
+        C2 -> C3
+        C3 -> C5
+    }
+}
+

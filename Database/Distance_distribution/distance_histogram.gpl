@@ -1,0 +1,81 @@
+#!/usr/bin/env gnuplot
+set macros
+set term x11
+set style line  1 lt 2 lc rgb "blue" lw 2
+set style line  2 lt 1 lc rgb "cyan" lw 2
+set style line  3 lt 2 lc rgb "red" lw 2
+set style line  4 lt 1 lc rgb "magenta" lw 2
+
+#set xlabel "CLUSTER DISTANCE [A]"
+set xlabel "CLUSTER DISTANCE [{\305}]"
+set ylabel "PROBABILITY"
+
+####################################################################
+file = '"distance_histogram.eps"'
+n1 = 4
+n2 = 16
+set xrange [0:1.]
+plot \
+  "Si-4_300K.RMSD.dhist" u (($1)/n1):2 w l ls 1 t " 4:  300K" , \
+ "Si-16_300K.RMSD.dhist" u (($1)/n2):2 w l ls 2 t "16:  300K" , \
+ "Si-4_2500K.RMSD.dhist" u (($1)/n1):2 w l ls 3 t " 4: 2500K" , \
+"Si-16_2500K.RMSD.dhist" u (($1)/n2):2 w l ls 4 t "16: 2500K" 
+pause -1 @file
+set encoding iso_8859_1
+set term post eps color 22 lw 2 enhanced; set output @file; repl; set term x11; set output
+!epstopdf @file ; rm @file
+
+!cp -i distance_histogram.pdf ../../Notes/Figures/
+exit
+
+####################################################################
+file = '"cdist"'
+pi = 4.*atan(1.)
+# max @ exp(mu -s^2)
+lognormal(x) =  a/(x*s*sqrt(2.*pi))*exp(-0.5*((log(x)-mu)/s)**2)
+data = '"Si-4_216x100_300K.dhist"'
+nn = 4
+n = 118973956
+fit lognormal(x)  @data u (0.5*(($2)+($3))/nn):(($1)/n) via a,s,mu
+plot \
+@data u (0.5*(($2)+($3))/nn):(($1)/n) w lp t "",\
+lognormal(x) w l lt -1 
+pause -1 @file
+set term post eps color 22 lw 2; set output @file; repl
+!epstopdf @file ; rm @file
+
+
+####################################################################
+exit
+data1 = '"LJ-5_10.histogram"'
+#stats @data1
+#n1 = STATS_records
+n1 = 45
+data2 = '"LJ-5_100.histogram"'
+#stats @data2
+#n2 = STATS_records
+n2 = 4950
+data3 = '"LJ-5_400.histogram"'
+#stats @data2
+#n2 = STATS_records
+n3 = 79800
+
+file = '"distance_histogram.eps"'
+print @data1, " count ", n1
+print @data2, " count ", n2
+print @data3, " count ", n3
+print "!!! OUTPUT A NORMALIZED HISTOGRAM !!!"
+plot \
+@data1 u (0.5*(($2)+($3))):(($1)/n1) w lp t "", \
+@data2 u (0.5*(($2)+($3))):(($1)/n2) w lp t "", \
+@data3 u (0.5*(($2)+($3))):(($1)/n3) w lp t ""
+pause -1 @file
+set term post eps color 22 lw 2; set output @file; repl
+!epstopdf @file ; rm @file
+
+exit
+set title "Histogram built from unsorted data by 'smooth frequency'"
+set ylabel 'counts per bin'
+set xlabel 'bins'
+plot 'hemisphr.dat' u (floor($1*20)):(1) smooth frequency with histeps
+
