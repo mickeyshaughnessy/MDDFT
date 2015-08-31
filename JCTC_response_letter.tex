@@ -1,0 +1,255 @@
+\documentclass[11pt,twoside]{article}
+\usepackage{amsmath,amssymb,amsfonts,amsmath}
+\usepackage{enumerate,graphicx}
+\headheight = 0.25in
+\topmargin = 0pt
+\headsep = 0pt
+\oddsidemargin = 0.0in
+\evensidemargin = 0.0in
+\textwidth = 6.5in
+\textheight = 8.5in
+\flushbottom
+
+%-------------- editing ----------------------
+
+\usepackage{color}
+\newcommand{\comment}[1]{\textcolor{blue}{[ \sc{#1} ]}} % comments
+\newcommand{\revise}[1]{\textcolor{red}{{#1}}} % revisions
+\newcommand{\revquote}[1]{``{\it{#1}}\rm''}
+\newcommand{\todo}[1]{{\bf TO DO:} \textcolor{red}{\bf{#1}}}
+
+%-------------- aliases -----------------------
+
+%------------------------------------------------------------------------------
+
+\begin{document}
+\bibliographystyle{alpha}
+\pagestyle{empty}
+\hbox{ \protect\vspace{-0.25in}}
+\begin{center}
+
+{\bf Response to review of manuscript ct-2015-00474m entitled: \\
+``{Efficient use of {\it abinitio} calculations to generate accurate Newtonian dynamics}''
+}
+\protect\vspace{0.1in} \\
+
+by Mickey C. Shaughnessy and  Reese E. Jones 
+\protect\vspace{0.1in}\\
+\end{center}
+\par
+
+$\\$Dear Editor Schlegel, 
+\vspace{0.1in}
+
+We would like to thank the reviewer for the fair and insightful critique and you for the opportunity to improve our manuscript based on the review.
+In the following we respond to the reviewer's suggestions.
+
+
+%\begin{quote}
+{\it
+The authors master a wide range of techniques and build on a set of
+recently introduced methodologies to devise an interpolation scheme
+for forces derived from ab initio calculations. The manuscript appears
+to be technically correct. I have a number of comments on their
+general introduction and how they see their method in the context of
+other work, and a number of specific queries about the results.
+}
+%\end{quote}
+
+%\begin{quote}
+%General comments:
+%\end{quote}
+\begin{enumerate}
+\item{\it
+The assumption of locality at the bottom of page 2 underlies *all*
+   interatomic potentials, including the general kernel based ones
+   that the authors cite right above. This is acknowledged later in
+   the middle of page 4. The selection of which ab-initio data is
+   relevant is the role of the kernel that measures similarity of
+   local environments.
+}\\[0.1in]
+Yes, we completely agree and we understand that the existing machine-learning approaches (Gaussian process-based techniques [7,8,9,24] and the like) are intended to distill the important information from hand-selected {\it ab initio} data. 
+We have rewritten our introduction, to make this important point more prominent and emphasize how we handle this task.
+\revise{information encoded in the radial and angular positions with decreasing sensitivity with increasing radial distance and locality in cluster space}
+
+\todo{revise intro}
+
+\item{\it
+The authors make much of the distinction between a local
+   interpolation and a global interpolation, but this is just a
+   technicality, because a global kernal-based interpolator can be
+   converted to a local interpolator by employing cutoff on the
+   similarity kernel. Using such a cutoff could end up being important
+   in practice (or a significant drawback, introducing discontinuities
+   into the dynamics), but is definitely not a fundamental aspect.
+}\\[0.1in]
+\revise{
+Agreed we emphasize the discussion of this point in the revised manuscript. 
+}
+\begin{quote}
+\revise{find quote}
+\end{quote}
+Idea to decompose the problem for scalability where most tasks are done independently on distinct processors i.e. avoiding communication to revise a global potential and/or restructure the cluster-force database globally.
+Alternative to complex global functional form, local enought that simple interpolation (e.g. with radial basis functions) suffices.
+thanks again and we have this point made more prominent in the introduction.
+
+\item{\it
+In the discussion the authors talk about "the tedious task of
+   constructing a globally applicable empirical potential", but this
+   is precisely what their work goes towards, automatically, and it's
+   a jolly good thing too. Other groups are exploring this way of
+   generating databases, although many have opted to add new entries
+   in batches, rather than one by one. A closed-loop system that is
+   truly fully automatic is a difficult beast to manage, and it is
+   telling that after all the desires are spelled out, the authors
+   stop short of carrying out their own programme, and they generate a
+   database once and investigate its properties, just like all other
+   groups.
+}\\[0.1in]
+We have taken this sggestion as a main point of revision and novelty for our work. 
+We present a final example of the capability to adapt the database and hence also the implicit force potential.
+In fact we have the facility to process new samples in batches too but we strive to make the cost of insertion negligible. 
+
+\item{\it
+In their development of the OGTO, when they relate it to SOAP, it
+   is worth mentioning that in SOAP the (square of the) overlap is
+   integrated over all rotations, whereas here the best match rotation
+   is found. This choice is strange, because it leads to a
+   discontinuity in the potential, because the best rotation can
+   change discontinuously as one of the environments changes by a
+   small amount. This is an insurmountable problem of the RMS-D type
+   descriptors, but with overlap-based ones it can be circumvented by
+   integration (rather than finding the best match), as in SOAP.
+}\\[0.1in]
+Finding the best rotation is necessary for force interpolation (same for ref [scoop])
+\todo{ Add graph of best match -- show smoothness i.e. with all other fixed e.g. permutations.}
+Expect smooth with sufficient radial cutoff.
+If bad match waste information not pollute interpolation.
+Perhaps we do not fully understand the reviewer on this point.
+
+Bcause the OGTO is permutation invariant, the derived forces do not suffer discontinuities as the atomic environment changes by a small amount. 
+Even in highly symmetric environments in which a small change in atomic positions can lead to a large change in the optimal rotation, the corresponding net forces are small (and tend to zero in the symmetric limit).
+
+\item{\it
+Eq 15 costs O($|$BQ$|^2$) to solve. A global interpolation would cost
+   O(database size). Which is larger in practice ? What are the
+   typical numbers of configurations in BQ ?
+}\\[0.1in]
+we have explored order 1-10, based on density of our samples. 
+The answer is : it depends on (a) the accuracy goal, which determines the local density of clusters in configuration space, and (b) the extent of configuration space that the database/graph needs to span i.e. how interesting/ergodic is the process.
+
+\item{\it
+In testing the method, the neighbourhood is defined in terms of
+   "closest 4" or "closest 16" neighbours ? how does this generalise
+   away from a crystal? what happenned in the 2500K simulations as the
+   liquid flowed (Si is liquid at these temperatures, not an amorphous
+   solid), is there a discontinuity introduced?
+}\\[0.1in]
+We see error in our presentation, based on RMS-D same size issue. 
+Alleviate with min, effectively zero.  
+With radius based on 1st and 2nd shells (may or may not correspond to 4 \& 16)
+these results nearly identical, perhaps not for amorphous.
+
+\item{\it
+What is the computational cost of an OGTO-force? How does it compare to
+SOAP
+   (whose cost is on the order of 10-100 ms/atom for databases that
+   are already useful)
+%Comments on results:
+}\\[0.1in]
+response?? ms/atom hard to compare given hardware dependence. 
+idea to distribute across large computer to scale efficiently??
+Test on ...
+
+\item{\it
+According to Fig 2b, even the 16-nearest neighbour model has
+   expected error $>$ 1 eV/A, resulting in quite a lousy model! How do
+   the algorithms behave with more reasonable choices of 30-50 nearest
+   neighbours that could produce force errors of 0.1 eV/A ?
+}\\[0.1in]
+radius THIS is a big deal. not sure how to respond. decouple identification radius and force computation radius?
+compare 2a to 2b (fewer contribute as farther)
+Real issue of surface effects i.e. how close are the atoms near vacuum to the central atom. 
+Other sampling might be better i.e. embedding the cluster -- future work, principle is there.
+We make this more clear in manuscript.
+
+\item{\it
+Fig 9: The authors *must* show absolute force errors. just how good
+   is this model? There are isolated points with no lines, why is
+   that? Force is a vector, so what is being shown here, perhaps force
+   error magnitude or force component error? I would prefer to see
+   force component error.
+}\\[0.1in]
+new final demonstration adaptive
+Show error in common system wide observables, momentum and temperature, as well as more statistical radial and angular distribution.
+\todo{fix Fig. 5 inset. really 10 trajectories}
+For fig 7, each is a cluster pair and we just the L2 norm. 
+Norm equivalence, same as max norm.
+need single cluster about 0.01 away for 0.1 eV/A error.
+This is bound.
+Better with interpolation i.e. more further away for same error.
+
+\item{\it
+How does the approach fare if one tries to include just two types
+    of quite different different environments *simultaneously*,
+    e.g. bulk and surfaces. The literature is full of papers
+    describing complex methodologies that are tested on just bulk
+    materials and showing "success", and that shows that bulk is easy.
+}\\[0.1in]
+we agree in principle, paper already long. 
+ground work to new method. 
+future work.
+try amorphous/crystalline solidification? but with Tersoff hard to find appeal.
+%to be completely candid we are in search of continuation funding
+
+\item{\it
+Dynamics: how about computing an actual thermodynamic observable,
+    e.g. angle distribution function as a function of temperature
+    (near 2500K) or the phonon spectrum at 0 K (or low T). The radial
+    distribution function is *not* enough, it is not a particularly
+    sensitive mesure of model accuracy.
+}\\[0.1in]
+\todo{add angular distribution}
+
+\item{\it
+The title is certainly not justified: the degree of accuracy of
+    the dynamics (i.e. trajectories and forces) was not assessed.
+}\\[0.1in]
+\revise{
+that was what the final example was for. }
+\end{enumerate}
+
+%\begin{quote}
+{\it
+So overall, the authors set out on an ambitious programme, combining
+existing methodologies in a new way, and this is commendable. I don't
+think they have achieved anything particularly notable yet, and
+certainly do not show any results in the present version of the
+manuscript that would entice anyone to follow in their path, but by
+addressing my points above perhaps they could show that their approach
+improves or at least is on par with the state of the art.
+}
+%\end{quote}
+
+Novel approach db to this arena.
+Shows promise distribute work on-the-fly, need addition development and testing.
+Fixed errors and ask for publication.
+
+\vskip 0.25in
+Sincerely,\\
+\vskip 0.05in
+Reese E. Jones and Mickey C. Shaughnessy
+
+\end{document}
+
+
+it was good to see you today and I think I’m feeling more positive about the paper. I definitely think we should hold on to our submission in JCTC since it puts a date-stamp on our work relative to anything else that might come up and our reviewer does seem to be at least willing to be impressed. We’ll need to draw his attention to some of the stuff he missed in the paper but I think adaptation will do wonders for our results.
+Re: adaptation here is what I think is simple an workable.
+* ADDITION if a query comes in where there is no database clusters in its trust
+* ball, do a new calculation and use it (i.e. big cost but no error)
+* SUBTRACTION every M steps check to see if any of the database clusters
+* haven’t been used in the last M steps, then delete them.
+
+ideally we would also have to rebuild the hierarchy every so often but I think we can just mention that.
+
+> scalability vs efficiency
